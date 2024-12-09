@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import path, { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import express from 'express'
@@ -9,13 +10,13 @@ const app = express()
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const categories = ['fruit', 'vegetable', 'dairy', 'fungi']
+const categories = ['fruit', 'vegetable', 'dairy', 'fungi', 'meat', 'fish']
 
 mongoose.connect('mongodb://127.0.0.1:27017/farmStand').then(() => {
   console.log('Connected to MongoDB')
 }).catch((err) => {
-  console.log('Error connecting to MongoDB')
-  console.log(err)
+  console.error('Error connecting to MongoDB')
+  console.error(err)
 })
 
 app.set('views', path.join(__dirname, '../views'))
@@ -33,8 +34,16 @@ app.get('/', (req, res) => {
 })
 
 app.get('/products', async (req, res) => {
-  const products = await Product.find({})
-  res.render('products/index', { Products: products })
+  const { category } = req.query
+
+  if (category) {
+    const products = await Product.find({ category })
+    res.render('products/index', { products, category })
+  }
+  else {
+    const products = await Product.find({})
+    res.render('products/index', { products, category: 'All' })
+  }
 })
 
 app.get('/products/new', async (req, res) => {
@@ -69,7 +78,7 @@ app.put('/products/:id', async (req, res) => {
 
 app.delete('/products/:id', async (req, res) => {
   const { id } = req.params
-  const deletedProduct = await Product.findByIdAndDelete(id)
+  await Product.findByIdAndDelete(id)
   res.redirect('/products')
 })
 
