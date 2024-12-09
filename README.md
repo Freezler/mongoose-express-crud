@@ -1,5 +1,6 @@
-**Tags:** `mongoose`, `express.js`, `node.js`, `restful-api`, `starter-project`
 # Mongoose Express CRUD application
+
+**Tags:** `mongoose`, `express.js`, `node.js`, `restful-api`, `starter-project`
 
 A basic project for building RESTful APIs with Mongoose and Express.js.
 
